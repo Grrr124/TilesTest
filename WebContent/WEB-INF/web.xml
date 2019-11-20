@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd" version="3.1">
+  <display-name>TilesTest</display-name>
+  
+  <filter>
+  	<filter-name>EncodingFilter</filter-name>
+  	<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+  	<init-param>
+  	<param-name>encoding</param-name>
+  	<param-value>UTF-8</param-value>
+  	</init-param>
+  </filter>
+  
+  <filter-mapping>
+  	<filter-name>EncodingFilter</filter-name>
+  	<url-pattern>/*</url-pattern>
+  </filter-mapping>
+  
+  <filter>
+<!-- name은 반드시 이 이름을 줘야 함.. 시큐리티 내부에서 이 이름으로 DelegatingFilterProxy 클래스를 찾기 때문이다.
+  	해당 필터가 적용될 URL 패턴을 모든 패턴을 의미하는 /*를 주도록 한다. *.do를 주면 내부 작업 url과 충돌이 나기 때문-->
+  	<filter-name>springSecurityFilterChain</filter-name>
+  	<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+  </filter>
+  <filter-mapping>
+  	<filter-name>springSecurityFilterChain</filter-name>
+  	<url-pattern>/*</url-pattern>
+  </filter-mapping>
+  
+  <context-param>
+  	<param-name>contextConfigLocation</param-name>
+  	<param-value>/WEB-INF/spring/*.xml</param-value>
+  </context-param>
+  
+  <!-- 리스너 : 특정 이벤트가 발생하기를 기다리다가 실행되는 컴포넌트(메소드나 함수)를 뜻한다 
+  ContextLoaderListener란 
+  -->
+  <listener>
+  	<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
+  
+  <servlet>
+   <!-- 서블릿 네임에서 임의의 이름을 정해줌 -->
+   <!-- 서블릿 클래스는 매핑할 클래스 파일명을 패키지명 포함하여 정확히 입력 -->
+  	<servlet-name>appServlet</servlet-name>
+  	<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+  	<init-param>
+  		<param-name>contextConfigLocation</param-name>
+  		<param-value>/WEB-INF/spring/appServlet/servlet-context.xml</param-value>
+  	</init-param>
+  	<!-- load-on-startup란?? init 메소드가 호출 되는 시기와 순서를 정한다고 간단히 요약 -->
+  	<load-on-startup>1</load-on-startup>
+  </servlet>
+  
+   <servlet-mapping>
+     <servlet-name>appServlet</servlet-name>
+     <url-pattern>/</url-pattern>
+  </servlet-mapping>
+  
+  <welcome-file-list>
+    <welcome-file>index.jsp</welcome-file>
+  </welcome-file-list>
+  
+<!--   DD(Deployment Descriptor)에서 전체 세션 타임아웃을 설정
+         클라이언트가 60분동안 요청이 없으면 세션 제거 -->
+  <session-config>
+  	<session-timeout>60</session-timeout>
+  </session-config>
+</web-app>
